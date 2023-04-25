@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { GithubAuthProvider, GoogleAuthProvider, createUserWithEmailAndPassword, getAuth, signInWithPopup } from "firebase/auth";
+import { GithubAuthProvider, GoogleAuthProvider, createUserWithEmailAndPassword, getAuth, sendEmailVerification, signInWithPopup } from "firebase/auth";
 import app from '../../firebase.config';
 import { toast } from 'react-hot-toast';
 const Register = () => {
@@ -23,7 +23,6 @@ const Register = () => {
             setError('Password must be 8 character');
             return
         }
-        console.log(email);
         createUserWithEmailAndPassword(auth, email, password)
         .then(result=>{
             result.user.displayName = name
@@ -31,6 +30,7 @@ const Register = () => {
             toast.success('Successfully create account!')
             setError('')
             e.target.reset();
+            EmailVerification(result.user)
             
         })
         .catch((error) => {
@@ -58,6 +58,13 @@ const Register = () => {
         .catch(error =>{
             console.log(error);
         })
+    }
+
+    const EmailVerification = (user) =>{
+        sendEmailVerification(auth.user)
+        .then((result) => {
+            console.log(result);
+          });
     }
 
     return (
